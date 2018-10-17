@@ -36,17 +36,18 @@ void crearmeeseek(){
 void resolvertarea(){
 	while(estado == false){
 		if(getpid() != padre || (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
-			printf("Tiempo es: %f\n",(double)(clock()-tiempo)/CLOCKS_PER_SEC);
+			//printf("Tiempo es: %f\n",(double)(clock()-tiempo)/CLOCKS_PER_SEC);
 			int numero = rand() % 100;
 			if(numero < dificultad){
 				estado = true;
-				printf("Lo logre: %d\n",getpid());
+				printf("Lo logre: (%d,%d)\n",getpid(), getppid());
+				kill(getpid(),1);
 				//crear pipe, indicarle al padre 
 				//se logro la tarea
 				//matar meeseeks
 			}
 			else{
-				printf("No se logro: %d\n",getpid());
+				printf("No lo logre: (%d,%d)\n",getpid(), getppid());
 			}
 			sleep(1);
 		}
@@ -67,7 +68,6 @@ void crearpadre(){
 		padre = getpid();
 		tiempo = clock();
 		resolvertarea();
-		//printf("El padre es: %d\n", padre);
 	}
 	if(padre != getpid()){
 		estadotarea();
