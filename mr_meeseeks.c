@@ -1,16 +1,86 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <semaphore.h>
+#include <pthread.h>
+
 
 typedef int bool;
 #define true 1
 #define false 0
 
+bool estado = false;
+int padre;
+int dificultad;
+char *tarea;
+clock_t tiempo;
+
+sem_t semaforo;
+
+
+void estadotarea(){
+	
+}
+
+void crearmeeseek(){
+	fork();
+	if(getpid() != padre){
+		printf("Hi I'm Mr Meeseeks! Look at Meeeee. (%d,%d)\n",getpid(), getppid());
+	}
+	tiempo=clock();
+}
+
+void resolvertarea(){
+	while(estado == false){
+		if(getpid() != padre || (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
+			printf("Tiempo es: %f\n",(double)(clock()-tiempo)/CLOCKS_PER_SEC);
+			int numero = rand() % 100;
+			if(numero < dificultad){
+				estado = true;
+				printf("Lo logre: %d\n",getpid());
+				//crear pipe, indicarle al padre 
+				//se logro la tarea
+				//matar meeseeks
+			}
+			else{
+				printf("No se logro: %d\n",getpid());
+			}
+			sleep(1);
+		}
+		else{
+			if(getpid()==padre){
+				crearmeeseek();
+			}
+		}
+	}
+	
+}
+
+void crearpadre(){
+	padre = getpid();
+	fork();
+	if(padre != getpid()){
+		printf("Hi I'm Mr Meeseeks! Look at Meeeee. (%d,%d)\n",getpid(), getppid());
+		padre = getpid();
+		tiempo = clock();
+		resolvertarea();
+		//printf("El padre es: %d\n", padre);
+	}
+	if(padre != getpid()){
+		estadotarea();
+	}
+	
+}
+
 int main()
 {
-	char *tarea = (char *)malloc(100);
-	int dificultad;
+	tarea = (char *)malloc(100);
+	sem_init(&semaforo, 0, 1);
 	pid_t pid;
+	//printf("El principal es: %d\n", getpid());
 	printf("Bienvenido al programa de Mr. Meeseeks\n\n");
 	char letra;
 	while(true){
@@ -35,7 +105,8 @@ int main()
 				scanf("%100[^\n]", tarea);
 				getchar();
 				printf("La tarea es: %s\n", tarea);
-				
+				padre = getpid();
+				crearpadre();
 			}
 			else{
 				//modo automatico
@@ -44,12 +115,3 @@ int main()
 	}
 	return 0;
 }
-
-void crearmeeseek(pid){
-	
-}
-
-void resolvertares(dificultad){
-	
-}
-
