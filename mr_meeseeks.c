@@ -17,6 +17,9 @@ int padre;
 int dificultad;
 char *tarea;
 clock_t tiempo;
+int n=0;
+int i=0;
+int cantidadhijos=0;
 
 sem_t semaforo;
 
@@ -28,7 +31,12 @@ void estadotarea(){
 void crearmeeseek(){
 	fork();
 	if(getpid() != padre){
+		//pasar i
+		//pasar n
 		printf("Hi I'm Mr Meeseeks! Look at Meeeee. (%d,%d)\n",getpid(), getppid());
+	}
+	if(grtpid() == padre){
+		cantidadhijos++;
 	}
 	tiempo=clock();
 }
@@ -37,6 +45,7 @@ void resolvertarea(){
 	while(estado == false){
 		if(getpid() != padre || (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
 			//printf("Tiempo es: %f\n",(double)(clock()-tiempo)/CLOCKS_PER_SEC);
+			//semaforo
 			int numero = rand() % 100;
 			if(numero < dificultad){
 				estado = true;
@@ -52,9 +61,7 @@ void resolvertarea(){
 			sleep(1);
 		}
 		else{
-			if(getpid()==padre){
-				crearmeeseek();
-			}
+			crearmeeseek();
 		}
 	}
 	
