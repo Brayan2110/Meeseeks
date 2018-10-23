@@ -125,13 +125,13 @@ void crearpadre(){
 int main()
 {
 	estado = mmap(NULL, sizeof *estado, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-	*estado = false;
 	semaforo = mmap(NULL, sizeof *semaforo, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-	sem_init(semaforo, 1, 1);
 	tarea = (char *)malloc(100);
 	printf("Bienvenido al programa de Mr. Meeseeks\n\n");
 	char letra;
 	while(true){
+		*estado = false;
+		sem_init(semaforo, 1, 1);
 		printf("Si desea asignar una tarea a un Mr. Meeseek pulse la letra m y pulse enter: ");
 		scanf("%c", &letra);
 		getchar();
