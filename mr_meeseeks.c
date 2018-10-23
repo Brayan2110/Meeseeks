@@ -9,12 +9,14 @@
 #include <fcntl.h>
 #include <sys/fcntl.h>
 #include <sys/mman.h>
-
+#include <time.h>
 
 typedef int bool;
 #define true 1
 #define false 0
 
+
+srand(time(NULL));
 static bool *estado;
 bool paso = false;
 int padre;
@@ -98,7 +100,6 @@ void resolvertarea(){
 			sleep(1);
 		}
 		else{
-			//printf("este paso: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);  //borrarlo despues
 			paso=true;
 			crearmeeseek();
 		}
@@ -157,7 +158,14 @@ int main()
 				crearpadre();
 			}
 			else{
-				//modo automatico
+				dificultad = (rand() % 101);
+				printf("La dificultad es: %d\n", dificultad);
+				printf("Asigne una tarea al Mr. Meeseek: ");
+				scanf("%100[^\n]", tarea);
+				getchar();
+				printf("La tarea es: %s\n", tarea);
+				padre = getpid();
+				crearpadre();
 			}
 		}
 	}
