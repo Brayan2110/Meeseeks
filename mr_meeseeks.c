@@ -8,13 +8,14 @@
 #include <pthread.h>
 #include <fcntl.h>
 #include <sys/fcntl.h>
+#include <sys/mman.h>
 
 
 typedef int bool;
 #define true 1
 #define false 0
 
-bool estado = false;
+static bool *estado;
 bool paso = false;
 int padre;
 int dificultad;
@@ -24,16 +25,17 @@ int n=0;
 int i=0;
 int cantidadhijos=0;
 
-sem_t *semaforo;
-
+pid_t pid;
+static sem_t *semaforo;
 
 void estadotarea(){
-	
+	wait(0);
+        printf("Programa Listo.\n");
 }
 
 void crearmeeseek(){
 	int pp = getpid();
-	fork();
+	pid = fork();
 	if(getpid() == pp){
 		int valn;
 		int vali;
@@ -61,31 +63,39 @@ void crearmeeseek(){
 		cantidadhijos=0;
 		printf("Hi I'm Mr Meeseeks! Look at Meeeee. (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
 		sem_post(semaforo);
+		sleep(1);
 	}
 	paso=false;
 }
 
 void resolvertarea(){
-	while(estado == false){
+	while(*estado == false){
 		sem_wait(semaforo);
-		if(estado == true){
+		if(*estado == true){
 			printf("Chao: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
+			sleep(1);
 			sem_post(semaforo);
+			wait(0);
 			kill(getpid(),1);
 		}
 		else if(paso == false && (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
 			int numero = rand() % 100;
 			if(numero < dificultad){
-				estado = true;
+				sleep(1);
+				*estado = true;
 				printf("Tarea completa: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
+				sleep(1);
 				sem_post(semaforo);
+				wait(0);
 				kill(getpid(),1);
 			}
 			else{
 				printf("No lo logre: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
+				
 			}
 			sleep(1);
 			sem_post(semaforo);
+			sleep(1);
 		}
 		else{
 			//printf("este paso: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);  //borrarlo despues
@@ -99,14 +109,14 @@ void resolvertarea(){
 
 void crearpadre(){
 	padre = getpid();
-	fork();
+	pid = fork();
 	if(padre != getpid()){
 		printf("Hi I'm Mr Meeseeks! Look at Meeeee. (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
 		padre = getpid();
 		tiempo = clock();
 		resolvertarea();
 	}
-	if(padre != getpid()){
+	else{
 		estadotarea();
 	}
 	
@@ -114,11 +124,11 @@ void crearpadre(){
 
 int main()
 {
-	//sem_init(&semaforo, 1, 1);
-	semaforo = sem_open("pSem", O_CREAT | O_EXCL, 0644, 1);
+	estado = mmap(NULL, sizeof *estado, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	*estado = false;
+	semaforo = mmap(NULL, sizeof *semaforo, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	sem_init(semaforo, 1, 1);
 	tarea = (char *)malloc(100);
-	pid_t pid;
-	//printf("El principal es: %d\n", getpid());
 	printf("Bienvenido al programa de Mr. Meeseeks\n\n");
 	char letra;
 	while(true){
