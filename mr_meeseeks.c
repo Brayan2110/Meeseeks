@@ -15,8 +15,6 @@ typedef int bool;
 #define true 1
 #define false 0
 
-
-srand(time(NULL));
 static bool *estado;
 bool paso = false;
 int padre;
@@ -71,7 +69,7 @@ void crearmeeseek(){
 }
 
 void resolvertarea(){
-	while(*estado == false){
+	while(true){
 		sem_wait(semaforo);
 		if(*estado == true){
 			printf("Chao: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
@@ -125,6 +123,7 @@ void crearpadre(){
 
 int main()
 {
+	srand(time(NULL));
 	estado = mmap(NULL, sizeof *estado, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	semaforo = mmap(NULL, sizeof *semaforo, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	tarea = (char *)malloc(100);
