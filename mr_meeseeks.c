@@ -83,7 +83,7 @@ void resolvertarea(){
 			if(numero < dificultad){
 				sleep(1);
 				*estado = true;
-				printf("Tarea completa: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
+				printf("Tarea completa chao: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
 				sleep(1);
 				sem_post(semaforo);
 				wait(0);
