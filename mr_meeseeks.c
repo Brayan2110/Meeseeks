@@ -29,8 +29,25 @@ pid_t pid;
 static sem_t *semaforo;
 
 void estadotarea(){
+	int valn;
+	int valpid;
+	int valppid;
+	int nn;
+	int ii;
+	printf("jaja\n");
+	valn = open("pipepid",O_RDONLY);
+	read(valn,&valpid,sizeof(nn));
+	
+	valn = open("pipeppid",O_RDONLY);
+	read(valn,&valppid,sizeof(ii));
+
+	valn = open("pipen",O_RDONLY);
+	read(valn,&nn,sizeof(ii));
+
+	valn = open("pipei",O_RDONLY);
+	read(valn,&ii,sizeof(ii));
 	wait(0);
-        printf("Programa Listo.\n");
+        printf("Tarea completada por el Meeseek: (%d,%d,%d,%d)\n",valpid,valppid,nn,ii);
 }
 
 void crearmeeseek(){
@@ -83,11 +100,32 @@ void resolvertarea(){
 			if(numero < dificultad){
 				sleep(1);
 				*estado = true;
-				printf("Tarea completa chao: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
+				printf("Tarea completa, soy el Mr. Meeseeks: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
 				sleep(1);
 				sem_post(semaforo);
-				wait(0);
-				kill(getpid(),1);
+				//pipe
+				int pid;
+				int ppid;
+				int nn;
+				int ii;
+				int varpid;
+				int varppid;
+				mkfifo("pipepid",0666);
+				pid = open("pipepid",O_WRONLY);
+				varpid = getpid();
+				write(pid,&varpid,sizeof(n));
+				mkfifo("pipeppid",0666);
+				ppid = open("pipeppid",O_WRONLY);
+				varppid = getppid();
+				write(ppid,&varppid,sizeof(n));
+				mkfifo("pipen",0666);
+				nn = open("pipen",O_WRONLY);
+				write(nn,&n,sizeof(n));
+
+				mkfifo("pipei",0666);
+				ii = open("pipei",O_WRONLY);
+				write(ii,&i,sizeof(n));
+				//pipe
 			}
 			else{
 				printf("No lo logre: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
