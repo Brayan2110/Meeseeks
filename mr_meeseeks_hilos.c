@@ -15,6 +15,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
+int cantidad = 400;
 int contador = 0;
 int nn = 0;
 int ii = 0;
@@ -61,8 +62,9 @@ void* resolvertarea(void *arg){
 		}
 		else{
 			if(paso == false && (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
-				int numero = rand() % 100;
-				if(numero < dificultad){
+				int numero = rand() % (dificultad + 1);
+				cantidad = cantidad - numero;
+				if(cantidad < 0){
 					estado = true;
 					nn = n;
 					ii = i;
