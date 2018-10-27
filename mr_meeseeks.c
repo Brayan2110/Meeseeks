@@ -15,6 +15,8 @@ typedef int bool;
 #define true 1
 #define false 0
 
+int cantidad = 400;
+float promee;
 static bool *estado;
 bool paso = false;
 int padre;
@@ -34,7 +36,6 @@ void estadotarea(){
 	int valppid;
 	int nn;
 	int ii;
-	printf("jaja\n");
 	valn = open("pipepid",O_RDONLY);
 	read(valn,&valpid,sizeof(nn));
 	
@@ -96,8 +97,9 @@ void resolvertarea(){
 			kill(getpid(),1);
 		}
 		else if(paso == false && (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
-			int numero = rand() % 100;
-			if(numero < dificultad){
+			int numero = rand() % (dificultad + 1);
+			cantidad = cantidad - numero;
+			if(cantidad < 0){
 				sleep(1);
 				*estado = true;
 				printf("Tarea completa, soy el Mr. Meeseeks: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
@@ -149,6 +151,7 @@ void crearpadre(){
 	pid = fork();
 	if(padre != getpid()){
 		printf("Hi I'm Mr Meeseeks! Look at Meeeee. (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
+		sleep(1);
 		padre = getpid();
 		tiempo = clock();
 		resolvertarea();
@@ -162,6 +165,8 @@ void crearpadre(){
 int main()
 {
 	srand(time(NULL));
+	srand48(time(NULL)); 
+	promee = drand48() * 4.6 + 0.5;
 	estado = mmap(NULL, sizeof *estado, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	semaforo = mmap(NULL, sizeof *semaforo, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	tarea = (char *)malloc(100);
