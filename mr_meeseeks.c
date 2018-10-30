@@ -15,7 +15,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-int cantidad = 400;
+int cantidad;
 static bool *estado;
 bool paso = false;
 int padre;
@@ -164,6 +164,8 @@ void crearpadre(){
 int main()
 {
 	srand(time(NULL));
+	cantidad = mmap(NULL, sizeof *cantidad, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	cantidad = 300;
 	estado = mmap(NULL, sizeof *estado, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	semaforo = mmap(NULL, sizeof *semaforo, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	tarea = (char *)malloc(100);
