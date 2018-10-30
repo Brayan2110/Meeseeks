@@ -98,7 +98,7 @@ void resolvertarea(){
 		else if(paso == false && (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
 			int numero = rand() % (dificultad + 1);
 			*cantidad = *cantidad - numero;
-			if(cantidad < 0){
+			if(*cantidad < 0){
 				sleep(1);
 				*estado = true;
 				printf("Tarea completa, soy el Mr. Meeseeks: (%d,%d,%d,%d)\n",getpid(), getppid(), n, i);
