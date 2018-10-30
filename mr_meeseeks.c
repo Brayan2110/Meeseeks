@@ -15,7 +15,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-int cantidad;
+static int *cantidad;
 static bool *estado;
 bool paso = false;
 int padre;
@@ -97,7 +97,7 @@ void resolvertarea(){
 		}
 		else if(paso == false && (double)(clock()-tiempo)/CLOCKS_PER_SEC < 0.001000){
 			int numero = rand() % (dificultad + 1);
-			cantidad = cantidad - numero;
+			*cantidad = *cantidad - numero;
 			if(cantidad < 0){
 				sleep(1);
 				*estado = true;
@@ -165,7 +165,7 @@ int main()
 {
 	srand(time(NULL));
 	cantidad = mmap(NULL, sizeof *cantidad, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-	cantidad = 300;
+	*cantidad = 300;
 	estado = mmap(NULL, sizeof *estado, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	semaforo = mmap(NULL, sizeof *semaforo, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	tarea = (char *)malloc(100);
